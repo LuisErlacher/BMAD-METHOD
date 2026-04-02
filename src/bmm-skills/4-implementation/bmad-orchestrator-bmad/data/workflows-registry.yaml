@@ -1,0 +1,124 @@
+# Phase 4: Implementation - Story Status Flow & Workflow Registry
+# This file defines the lifecycle of a story through the implementation phase.
+# The orchestrator uses these statuses to determine which workflow to execute next.
+
+story_status_flow:
+  statuses:
+    - name: backlog
+      description: "Story defined but not ready for development"
+      next: ready-to-dev
+      workflow: create-story
+
+    - name: ready-to-dev
+      description: "Story fully specified, ready for implementation"
+      next: in-progress
+      workflow: dev-story
+
+    - name: in-progress
+      description: "Developer actively working on implementation"
+      next: review
+      workflow: dev-story
+
+    - name: review
+      description: "Code complete, awaiting code review"
+      next: qa-review
+      workflow: code-review
+
+    - name: qa-review
+      description: "Code review passed, awaiting QA validation"
+      next: done
+      workflow: qa-review
+
+    - name: done
+      description: "All validations passed, story complete"
+      next: null
+      workflow: null
+
+  transitions:
+    - from: backlog
+      to: ready-to-dev
+      trigger: create-story completes story specification
+
+    - from: ready-to-dev
+      to: in-progress
+      trigger: dev-story starts implementation
+
+    - from: in-progress
+      to: review
+      trigger: dev-story completes all tasks and tests pass
+
+    - from: review
+      to: qa-review
+      trigger: code-review passes (no blocking issues)
+
+    - from: review
+      to: in-progress
+      trigger: code-review fails (blocking issues found)
+
+    - from: qa-review
+      to: done
+      trigger: qa-review passes (no blocking issues)
+
+    - from: qa-review
+      to: in-progress
+      trigger: qa-review fails (blocking issues found)
+
+# Workflow definitions mapped to skills
+workflows:
+  sprint-planning:
+    skill: bmad-sprint-planning
+    category: planning
+
+  sprint-status:
+    skill: bmad-sprint-status
+    category: planning
+    routes_to:
+      - create-story
+      - dev-story
+      - code-review
+      - qa-review
+      - correct-course
+
+  create-story:
+    skill: bmad-create-story
+    category: creation
+    input_status: backlog
+    output_status: ready-to-dev
+
+  dev-story:
+    skill: bmad-dev-story
+    category: development
+    input_status: ready-to-dev
+    output_status: review
+
+  code-review:
+    skill: bmad-code-review
+    category: validation
+    input_status: review
+    output_status_pass: qa-review
+    output_status_fail: in-progress
+
+  qa-review:
+    skill: bmad-qa-review
+    category: validation
+    input_status: qa-review
+    output_status_pass: done
+    output_status_fail: in-progress
+
+  correct-course:
+    skill: bmad-correct-course
+    category: correction
+
+  retrospective:
+    skill: bmad-retrospective
+    category: retrospective
+
+  orchestrator-bmad:
+    skill: bmad-orchestrator-bmad
+    category: orchestration
+    orchestrates:
+      - create-story
+      - dev-story
+      - code-review
+      - qa-review
+    follows_status_flow: true

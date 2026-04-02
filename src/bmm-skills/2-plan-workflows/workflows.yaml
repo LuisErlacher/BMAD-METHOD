@@ -1,0 +1,22 @@
+# Phase 2: Planning - Available Workflows
+# This index allows workflows to discover available workflows in this phase
+phase: planning
+phase_number: 2
+description: "Planning workflows for defining requirements, UX, and product specifications"
+
+workflows:
+  create-prd:
+    path: "create-prd"
+    description: "PRD tri-modal workflow - Create, Validate, or Edit comprehensive PRDs"
+    standalone: false
+    web_bundle: true
+    modes:
+      - create
+      - validate
+      - edit
+
+  create-ux-design:
+    path: "create-ux-design"
+    description: "Work with a peer UX Design expert to plan your applications UX patterns, look and feel."
+    standalone: false
+    web_bundle: true

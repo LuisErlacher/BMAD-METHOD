@@ -1,0 +1,14 @@
+# Document Project - Available Workflows
+# This index allows workflows to discover available workflows in this category
+category: documentation
+description: "Project documentation and analysis workflows for brownfield projects"
+
+workflows:
+  document-project:
+    path: "."
+    description: "Analyzes and documents brownfield projects by scanning codebase, architecture, and patterns to create comprehensive reference documentation for AI-assisted development"
+    standalone: false
+    web_bundle: false
+    sub_workflows:
+      - full-scan
+      - deep-dive
